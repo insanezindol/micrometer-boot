@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  shutdown: graceful
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+spring:
+  application:
+    name: micrometer-boot
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/appdb?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: appuser
+    password: 123456
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    show-sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  redis:
+    host: localhost
+    port: 6379
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: test-group-id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+elasticsearch:
+  host: localhost:9200
+
+wiremock:
+  host: http://localhost
+  port: 9999
+  api-key: test-token
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+
+  metrics:
+    tags:
+      application: ${spring.application.name}

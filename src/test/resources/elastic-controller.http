@@ -1,0 +1,41 @@
+###
+GET /blog
+Host: localhost:8080
+Content-Type: application/json
+
+
+###
+GET /blog/id/53a5fd70-af46-4c4e-bdd9-ba5ef514a7ee
+Host: localhost:8080
+
+
+###
+GET /blog/title/안녕3
+Host: localhost:8080
+
+
+###
+POST /blog
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "title" : "안녕3",
+  "contents" : "DTO는 로직을 가지지 않는 데이터 객체3"
+}
+
+
+###
+PUT /blog/53a5fd70-af46-4c4e-bdd9-ba5ef514a7ee
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "title" : "안녕33",
+  "contents" : "DTO는 로직을 가지지 않는 데이터 객체33"
+}
+
+
+###
+DELETE /blog/2dbe5079-cf90-443e-96c7-b310ab48e890
+Host: localhost:8080

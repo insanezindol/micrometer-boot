@@ -1,0 +1,22 @@
+1. mysql container 접속
+docker exec -it mysql /bin/bash
+
+2. mysql console 접속
+mysql -u root -p
+
+3. 비밀번호 입력
+123456
+
+4. db 및 사용자 생성
+CREATE DATABASE appdb;
+
+CREATE USER 'appuser'@'%' IDENTIFIED BY '123456';
+
+GRANT ALL PRIVILEGES ON appdb.* TO 'appuser'@'%' IDENTIFIED BY '123456';
+
+FLUSH PRIVILEGES;
+
+5. mysql console 접속 종료
+exit
+
+6. mysql container 접속 종료

@@ -1,0 +1,19 @@
+###
+GET /product
+Host: localhost:8080
+
+
+###
+GET /product/id/test-1234
+Host: localhost:8080
+
+
+###
+POST /product
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "order_id" : "test1234"
+}
+

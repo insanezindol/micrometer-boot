@@ -1,0 +1,39 @@
+###
+GET /user
+Host: localhost:8080
+
+
+###
+GET /user/id/1
+Host: localhost:8080
+
+
+###
+GET /user/name/jinhyung.lee
+Host: localhost:8080
+
+
+###
+POST /user
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userName" : "zindol-test"
+}
+
+
+###
+PUT /user/3
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "userName" : "zindol-test2"
+}
+
+
+###
+DELETE /user/3
+Host: localhost:8080
+

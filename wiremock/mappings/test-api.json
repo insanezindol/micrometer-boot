@@ -1,0 +1,97 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "url": "/v1/get-test",
+        "method": "GET",
+        "headers": {
+          "x-api-key": {
+            "equalTo": "test-token",
+            "caseInsensitive": true
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": [
+          {
+            "order_id": "ORD-11111",
+            "user_id": "user11111",
+            "product_id": "SHOES11111",
+            "product_name": "NIKE SHOES",
+            "requested_at": "2022-12-07T00:00:00.000Z",
+            "canceled": false,
+            "fee": 3000
+          },
+          {
+            "order_id": "ORD-22222",
+            "user_id": "user22222",
+            "product_id": "SHOES22222",
+            "product_name": "ADIDAS SHOES",
+            "requested_at": "2022-12-10T00:00:0.000Z",
+            "canceled": false,
+            "fee": 3000
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "urlPattern": "/v1/get-test/([0-9a-zA-Z\\-]*)",
+        "method": "GET",
+        "headers": {
+          "x-api-key": {
+            "equalTo": "test-token",
+            "caseInsensitive": true
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "order_id": "ORD-11111",
+          "user_id": "user11111",
+          "product_id": "SHOES11111",
+          "product_name": "NIKE SHOES",
+          "requested_at": "2022-12-07T00:00:00.000Z",
+          "canceled": false,
+          "fee": 3000
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "/v1/post-test",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "equalTo": "test-token",
+            "caseInsensitive": true
+          }
+        },
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.order_id"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "code": 0,
+          "message": "OK",
+          "data": "success"
+        }
+      }
+    }
+  ]
+}

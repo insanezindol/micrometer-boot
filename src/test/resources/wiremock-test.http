@@ -1,0 +1,27 @@
+###
+GET /__admin/mappings
+Host: localhost:9999
+
+
+###
+GET /v1/get-test
+Host: localhost:9999
+x-api-key: test-token
+
+
+###
+GET /v1/get-test/test1234
+Host: localhost:9999
+x-api-key: test-token
+
+
+###
+POST /v1/post-test
+Host: localhost:9999
+x-api-key: test-token
+Content-Type: application/json
+
+{
+  "order_id": "test"
+}
+

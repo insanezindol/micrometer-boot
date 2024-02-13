@@ -1,0 +1,135 @@
+version: '2.14.0'
+
+services:
+
+  mysql:
+    container_name: mysql
+    image: 'mysql:5.7.40'
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Seoul
+    command: '--lower_case_table_names=0 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+    restart: unless-stopped
+
+  redis:
+    container_name: redis
+    image: 'redis:7.0.7'
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+
+  # /usr/share/elasticsearch/bin/elasticsearch-pluginpersonRedisRepository install analysis-nori
+  elasticsearch:
+    container_name: elasticsearch
+    image: 'elasticsearch:8.5.2'
+    ports:
+      - '9200:9200'
+    environment:
+      - discovery.type=single-node
+      - node.name=local-node
+      - cluster.name=local-cluster
+      - xpack.security.enabled=false
+    networks:
+      - elastic-net
+    restart: unless-stopped
+
+  kibana:
+    container_name: kibana
+    image: 'kibana:8.5.2'
+    ports:
+      - '5601:5601'
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic-net
+    restart: unless-stopped
+
+  zookeeper:
+    container_name: zookeeper
+    image: 'confluentinc/cp-zookeeper:7.3.0'
+    ports:
+      - '22181:2181'
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    restart: unless-stopped
+
+  kafka:
+    container_name: kafka
+    image: 'confluentinc/cp-kafka:7.3.0'
+    depends_on:
+      - zookeeper
+    ports:
+      - '29092:29092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    restart: unless-stopped
+
+  kafka-manager:
+    container_name: kafka-manager
+    image: 'hlebalbau/kafka-manager:stable'
+    ports:
+      - '9000:9000'
+    environment:
+      - ZK_HOSTS=zookeeper:2181
+      - APPLICATION_SECRET=letmein
+    depends_on:
+      - zookeeper
+      - kafka
+    restart: unless-stopped
+
+  prometheus:
+    container_name: prometheus
+    image: 'prom/prometheus:latest'
+    user: root
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  grafana:
+    container_name: grafana
+    image: 'grafana/grafana:latest'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prometheus
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  wiremock:
+    container_name: wiremock
+    image: 'wiremock/wiremock:2.35.0'
+    ports:
+      - '9999:8080'
+      - '8443:8443'
+    command: '--https-port 8443 --verbose'
+    volumes:
+      - "./wiremock/mappings:/home/wiremock/mappings"
+    restart: unless-stopped
+
+networks:
+  elastic-net:
+    name: elastic-net
+    driver: bridge
+  monitor-net:
+    name: monitor-net
+    driver: bridge
