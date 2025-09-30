@@ -235,10 +235,6 @@ docker build -t micrometer-boot:latest .
 docker run -p 8080:8080 micrometer-boot:latest
 ```
 
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
-
 ## Code Coverage (jacoco)
 
 ![1](https://user-images.githubusercontent.com/32256571/206897162-4fdb8785-b8e4-4f62-9f79-a6bef7b8fc26.png)
