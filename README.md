@@ -12,9 +12,9 @@ Spring Boot 애플리케이션에서 Micrometer를 활용한 모니터링 및 �
 -   **데이터베이스**: MySQL 5.7.40, Redis 7.0.7
 -   **메시징**: Apache Kafka
 -   **검색엔진**: Elasticsearch
--   **모니터링**: Micrometer + Prometheus
+-   **Monitoring**: Micrometer + Prometheus
 -   **HTTP 클라이언트**: OpenFeign
--   **테스트**: JUnit 5, Testcontainers, WireMock
+-   **Test**: JUnit 5, Testcontainers, WireMock
 -   **빌드 도구**: Maven
 
 ## 📋 주요 기능
