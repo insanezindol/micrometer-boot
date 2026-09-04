@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -27,7 +27,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @Testcontainers
@@ -52,7 +52,7 @@ class SpringIntegrationTestForWireMock {
     RedisService redisService;
 
     @Container
-    static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(DockerImageName.parse("mysql:5.7.40"))
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.43"))
             .withInitScript("init-db.sql")
             .withDatabaseName("appdb")
             .withUsername("test")
@@ -62,7 +62,7 @@ class SpringIntegrationTestForWireMock {
             .waitingFor(Wait.forListeningPort());
 
     @Container
-    static ElasticsearchContainer elasticsearchContainer = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.5.2")
+    static ElasticsearchContainer elasticsearchContainer = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.18.8")
             .withEnv("discovery.type", "single-node")
             .withEnv("node.name", "local-node")
             .withEnv("cluster.name", "local-cluster")
@@ -71,12 +71,12 @@ class SpringIntegrationTestForWireMock {
             .waitingFor(Wait.forListeningPort());
 
     @Container
-    static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.3.0"))
+    static ConfluentKafkaContainer kafkaContainer = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.9.2"))
             .withReuse(true)
             .waitingFor(Wait.forListeningPort());
 
     @Container
-    static GenericContainer redisContainer = new GenericContainer(DockerImageName.parse("redis:7.0.7"))
+    static GenericContainer<?> redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7.0.7"))
             .withExposedPorts(6379)
             .withReuse(true)
             .waitingFor(Wait.forListeningPort());
@@ -94,7 +94,7 @@ class SpringIntegrationTestForWireMock {
         registry.add("spring.kafka.consumer.bootstrap-servers", kafkaContainer::getBootstrapServers);
         registry.add("spring.kafka.producer.bootstrap-servers", kafkaContainer::getBootstrapServers);
         registry.add("wiremock.port", () -> "8080");
-        registry.add("spring.redis.port", () -> "" + redisContainer.getMappedPort(6379));
+        registry.add("spring.data.redis.port", () -> "" + redisContainer.getMappedPort(6379));
     }
 
     @BeforeAll

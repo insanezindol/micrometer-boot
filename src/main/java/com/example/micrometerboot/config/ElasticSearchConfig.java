@@ -1,37 +1,26 @@
 package com.example.micrometerboot.config;
 
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 
+/**
+ * Spring Data Elasticsearch 5.x 부터 RestHighLevelClient / ElasticsearchRestTemplate 이 제거되어
+ * 신규 Elasticsearch Java Client 기반의 ElasticsearchConfiguration 을 사용한다.
+ * ElasticsearchClient, ElasticsearchOperations(elasticsearchTemplate) 빈은 상위 클래스가 등록해준다.
+ */
 @Configuration
-public class ElasticSearchConfig {
+public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
     @Value("${elasticsearch.host}")
     private String host;
 
-    @Bean(destroyMethod = "close")
-    public RestHighLevelClient client() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.ACCEPT, "application/vnd.elasticsearch+json;compatible-with=7");
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/vnd.elasticsearch+json;compatible-with=7");
-        ClientConfiguration clientConfiguration
-                = ClientConfiguration.builder()
+    @Override
+    public ClientConfiguration clientConfiguration() {
+        return ClientConfiguration.builder()
                 .connectedTo(host)
-                .withDefaultHeaders(httpHeaders)
                 .build();
-        return RestClients.create(clientConfiguration).rest();
-    }
-
-    @Bean
-    public ElasticsearchOperations elasticsearchTemplate() {
-        return new ElasticsearchRestTemplate(client());
     }
 
 }

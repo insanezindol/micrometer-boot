@@ -1,5 +1,5 @@
 # docker build --build-arg SPRING_ACTIVE_PROFILE=dev -t micrometer-boot .
-FROM eclipse-temurin:11-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 VOLUME /tmp
 ARG JAR_FILE
 ARG SPRING_ACTIVE_PROFILE

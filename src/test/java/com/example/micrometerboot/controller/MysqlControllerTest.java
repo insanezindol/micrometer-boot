@@ -10,14 +10,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static com.navercorp.fixturemonkey.api.experimental.JavaGetterMethodPropertySelector.javaGetter;
+import static com.navercorp.fixturemonkey.api.expression.JavaGetterMethodPropertySelector.javaGetter;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -39,7 +39,7 @@ class MysqlControllerTest {
      * @Autowired MockMvc mvc;
      * 컨트롤러의 api를 테스트하는 용도인 MockMvc 객체를 주입받습니다.
      * perform(httpMethod)로 실행하며 andExpect, andDo, andReturn등으로 동작을 확인하는 방식입니다.
-     * @MockBean MysqlService mysqlService;
+     * @MockitoBean MysqlService mysqlService;
      * MysqlController는 MysqlService를 스프링컨테이너에서 주입받고있으므로
      * 가짜 객체를 만들어 컨테이너가 주입할 수 있도록 해줍니다.
      * 해당객체는 가짜객체이므로 실제 행위를 하는 객체가 아닙니다.
@@ -66,7 +66,7 @@ class MysqlControllerTest {
     @Autowired
     MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     MysqlService mysqlService;
 
     FixtureMonkey fixtureMonkey;

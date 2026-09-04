@@ -10,7 +10,6 @@ import org.springframework.retry.RetryListener;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.interceptor.RetryInterceptorBuilder;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
-import org.springframework.retry.listener.RetryListenerSupport;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
@@ -23,7 +22,7 @@ public class RetryConfiguration {
 
     private static final int OPTIMISTIC_LOCKING_MAX_RETRIES = 3;
 
-    private static final RetryListener RETRY_LISTENER = new RetryListenerSupport() {
+    private static final RetryListener RETRY_LISTENER = new RetryListener() {
         @Override
         public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
             if (throwable instanceof ObjectOptimisticLockingFailureException) {

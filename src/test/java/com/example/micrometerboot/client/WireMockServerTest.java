@@ -1,11 +1,11 @@
 package com.example.micrometerboot.client;
 
 import com.example.micrometerboot.dto.ProductDto;
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,20 +20,30 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.junit.Assert.assertEquals;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WireMockTest
 public class WireMockServerTest {
 
+    /**
+     * WireMock 3.x 는 평문 HTTP/2(h2c) 를 기본 지원하는데, JDK HttpClient 기반의 TestRestTemplate 이
+     * 본문이 있는 요청을 h2c 로 업그레이드하는 과정에서 스트림이 취소되므로 h2c 를 비활성화한다.
+     */
+    @RegisterExtension
+    static WireMockExtension wireMock = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort().http2PlainDisabled(true))
+            .configureStaticDsl(true)
+            .build();
+
     @Test
-    void simpleStubTesting(WireMockRuntimeInfo wmRuntimeInfo) {
+    void simpleStubTesting() {
         // given
         String responseBody = "Hello World !!";
         String apiUrl = "/api-url";
         stubFor(get(apiUrl).willReturn(ok(responseBody)));
 
         // when
-        String apiResponse = getContent(wmRuntimeInfo.getHttpBaseUrl() + apiUrl);
+        String apiResponse = getContent(wireMock.baseUrl() + apiUrl);
 
         // then
         assertEquals(apiResponse, responseBody);
@@ -41,7 +51,7 @@ public class WireMockServerTest {
     }
 
     @Test
-    void findAllProduct(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+    void findAllProduct() throws Exception {
         // given
         JSONObject order1 = new JSONObject();
         order1.put("order_id", "ORD-11111");
@@ -72,7 +82,7 @@ public class WireMockServerTest {
                         .withBody(orderArray.toString())));
 
         // when
-        String apiResponse = getContent(wmRuntimeInfo.getHttpBaseUrl() + apiUrl);
+        String apiResponse = getContent(wireMock.baseUrl() + apiUrl);
 
         // then
         assertEquals(apiResponse, orderArray.toString());
@@ -80,7 +90,7 @@ public class WireMockServerTest {
     }
 
     @Test
-    void findProduct(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+    void findProduct() throws Exception {
         // given
         String orderId = "ORD-11111";
         JSONObject order = new JSONObject();
@@ -101,7 +111,7 @@ public class WireMockServerTest {
                         .withBody(order.toString())));
 
         // when
-        String apiResponse = getContent(wmRuntimeInfo.getHttpBaseUrl() + apiUrl + orderId);
+        String apiResponse = getContent(wireMock.baseUrl() + apiUrl + orderId);
 
         // then
         assertEquals(apiResponse, order.toString());
@@ -109,7 +119,7 @@ public class WireMockServerTest {
     }
 
     @Test
-    void addProduct(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+    void addProduct() throws Exception {
         // given
         JSONObject response = new JSONObject();
         response.put("code", 0);
@@ -127,7 +137,7 @@ public class WireMockServerTest {
         productDto.setProductId("test-order-id");
 
         // when
-        String apiResponse = postContent(wmRuntimeInfo.getHttpBaseUrl() + apiUrl, productDto);
+        String apiResponse = postContent(wireMock.baseUrl() + apiUrl, productDto);
 
         // then
         assertEquals(apiResponse, response.toString());

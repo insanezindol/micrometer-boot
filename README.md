@@ -6,10 +6,10 @@ Spring Boot 애플리케이션에서 Micrometer를 활용한 모니터링 및 �
 
 ## 🛠️ 기술 스택
 
--   **Java**: 11
--   **Spring Boot**: 2.7.7-SNAPSHOT
--   **Spring Cloud**: 2021.0.5
--   **데이터베이스**: MySQL 5.7.40, Redis 7.0.7
+-   **Java**: 21
+-   **Spring Boot**: 3.5.16
+-   **Spring Cloud**: 2025.0.3
+-   **데이터베이스**: MySQL 8.0.43, Redis 7.0.7
 -   **메시징**: Apache Kafka
 -   **검색엔진**: Elasticsearch
 -   **Monitoring**: Micrometer + Prometheus
@@ -78,7 +78,7 @@ src/
 
 ### 1. 전제 조건
 
--   Java 11 이상
+-   Java 21 이상
 -   Docker & Docker Compose
 -   Maven 3.6 이상
 

@@ -20,11 +20,12 @@ spring:
     generate-ddl: false
     show-sql: true
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
 
-  redis:
-    host: localhost
-    port: 6379
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
   kafka:
     consumer:
@@ -49,9 +50,9 @@ wiremock:
 management:
   endpoint:
     metrics:
-      enabled: true
+      access: read-only
     prometheus:
-      enabled: true
+      access: read-only
 
   endpoints:
     web:
